@@ -4,54 +4,106 @@
   <meta charset="UTF-8">
   <title>Quy trình xử lý đơn hàng</title>
   <style>
-    .diagram-wrapper { position: relative; display: inline-block; max-width: 100%; }
-    .diagram-wrapper img.main-diagram { display: block; width: 100%; height: auto; }
-    .hotspot { position: absolute; cursor: pointer; background: rgba(255,0,0,0.2); }
+    /* Wrapper giữ ảnh gốc và các hotspot */
+    .diagram-wrapper {
+      position: relative;
+      display: inline-block;
+      max-width: 100%;
+    }
+    /* Ảnh nền */
+    .diagram-wrapper img.main-diagram {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+    /* Hotspot trong suốt bắt hover */
+    .hotspot {
+      position: absolute;
+      cursor: pointer;
+    }
+    /* Tọa độ & kích thước từng bước – hãy hiệu chỉnh cho chính xác */
     .hs-step1 { top: 60px;  left: 120px; width: 140px; height: 90px; }
     .hs-step2 { top: 240px; left: 300px; width: 130px; height: 80px; }
+    /* Thêm .hs-step3, .hs-step4… tương tự nếu cần */
+
+    /* Tooltip hiển thị ảnh/video */
     #tooltip {
-      position: fixed; pointer-events: none; background: rgba(0,0,0,0.7);
-      border-radius: 4px; padding: 6px; display: none; z-index: 1000;
+      position: fixed;
+      pointer-events: none;
+      background: rgba(0,0,0,0.7);
+      border-radius: 4px;
+      padding: 6px;
+      display: none;
+      z-index: 1000;
     }
-    #tooltip img, #tooltip video { max-width: 200px; max-height: 150px; display: block; }
+    #tooltip img,
+    #tooltip video {
+      max-width: 200px;
+      max-height: 150px;
+      display: block;
+    }
   </style>
 </head>
 <body>
+
   <div class="diagram-wrapper">
+    <!-- Ảnh nền đã upload lên repo -->
     <img
       class="main-diagram"
       src="https://raw.githubusercontent.com/dattt-cyber-ghn/order-diagram/main/2025.LnD.Orientation-GHN.png"
       alt="Quy trình xử lý đơn hàng">
 
+    <!-- Hotspot bước 1 -->
     <div class="hotspot hs-step1"
          data-media-url="https://drive.google.com/uc?export=view&id=DRIVE_IMG_ID_1"
-         data-media-type="image"></div>
+         data-media-type="image">
+    </div>
 
+    <!-- Hotspot bước 2 -->
     <div class="hotspot hs-step2"
          data-media-url="https://drive.google.com/uc?export=view&id=DRIVE_VIDEO_ID_2"
-         data-media-type="video"></div>
+         data-media-type="video">
+    </div>
+
+    <!-- Thêm các hotspot khác ở đây -->
   </div>
 
   <div id="tooltip"></div>
 
   <script>
     const tooltip = document.getElementById('tooltip');
+
     document.querySelectorAll('.hotspot').forEach(el => {
       el.addEventListener('mousemove', e => {
-        const url = el.dataset.mediaUrl, type = el.dataset.mediaType;
-        tooltip.innerHTML = type==='video'
+        const url  = el.dataset.mediaUrl;
+        const type = el.dataset.mediaType;
+        if (!url) return;
+
+        // Build nội dung preview
+        tooltip.innerHTML = type === 'video'
           ? `<video src="${url}" autoplay loop muted></video>`
           : `<img src="${url}" alt="Preview">`;
-        const pad=10, r=tooltip.getBoundingClientRect();
-        let x=e.clientX+pad, y=e.clientY+pad;
-        if(x+r.width>innerWidth)  x=e.clientX-r.width-pad;
-        if(y+r.height>innerHeight) y=e.clientY-r.height-pad;
-        tooltip.style.left=`${x}px`;
-        tooltip.style.top=`${y}px`;
-        tooltip.style.display='block';
+
+        // Tính vị trí tooltip
+        const pad = 10;
+        let x = e.clientX + pad;
+        let y = e.clientY + pad;
+        const rect = tooltip.getBoundingClientRect();
+
+        if (x + rect.width  > window.innerWidth)  x = e.clientX - rect.width  - pad;
+        if (y + rect.height > window.innerHeight) y = e.clientY - rect.height - pad;
+
+        tooltip.style.left    = x + 'px';
+        tooltip.style.top     = y + 'px';
+        tooltip.style.display = 'block';
       });
-      el.addEventListener('mouseleave', ()=>tooltip.style.display='none');
+
+      el.addEventListener('mouseleave', () => {
+        tooltip.style.display = 'none';
+        tooltip.innerHTML = '';
+      });
     });
   </script>
+
 </body>
 </html>
