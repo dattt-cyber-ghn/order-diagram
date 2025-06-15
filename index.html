@@ -17,13 +17,10 @@
     .hotspot {
       position: absolute;
       cursor: pointer;
-      /* Bật background đỏ mờ để căn chỉnh, tắt khi đã xong */
       background: rgba(255,0,0,0.2);
     }
-    /* Tinh chỉnh tọa độ cho hotspot theo đúng vị trí trên ảnh */
     .hs-step1 { top: 60px;  left: 120px; width: 140px; height: 90px; }
     .hs-step2 { top: 240px; left: 300px; width: 130px; height: 80px; }
-    /* Thêm .hs-step3, .hs-step4… nếu cần */
 
     #tooltip {
       position: fixed;
@@ -34,8 +31,7 @@
       display: none;
       z-index: 1000;
     }
-    #tooltip img,
-    #tooltip video {
+    #tooltip img, #tooltip video {
       max-width: 200px;
       max-height: 150px;
       display: block;
@@ -45,25 +41,21 @@
 <body>
 
   <div class="diagram-wrapper">
-    <!-- Đã encode khoảng trắng thành %20 -->
+    <!-- Dùng raw.githubusercontent.com để lấy file ảnh đã upload -->
     <img
       class="main-diagram"
-      src="2025.LnD.Orientation%20GHN.png"
+      src="https://raw.githubusercontent.com/dattt-cyber-ghn/order-diagram/main/2025.LnD.Orientation%20GHN.png"
       alt="Quy trình xử lý đơn hàng">
 
-    <!-- Hotspot bước 1 -->
     <div class="hotspot hs-step1"
          data-media-url="https://drive.google.com/uc?export=view&id=DRIVE_IMG_ID_1"
          data-media-type="image">
     </div>
 
-    <!-- Hotspot bước 2 -->
     <div class="hotspot hs-step2"
          data-media-url="https://drive.google.com/uc?export=view&id=DRIVE_VIDEO_ID_2"
          data-media-type="video">
     </div>
-
-    <!-- Thêm hotspot khác tương tự -->
   </div>
 
   <div id="tooltip"></div>
@@ -72,33 +64,22 @@
     const tooltip = document.getElementById('tooltip');
     document.querySelectorAll('.hotspot').forEach(el => {
       el.addEventListener('mousemove', e => {
-        const url  = el.dataset.mediaUrl;
-        const type = el.dataset.mediaType;
-        if (!url) return;
-
-        tooltip.innerHTML = type === 'video'
+        const url  = el.dataset.mediaUrl, type = el.dataset.mediaType;
+        tooltip.innerHTML = type==='video'
           ? `<video src="${url}" autoplay loop muted></video>`
           : `<img src="${url}" alt="Preview">`;
 
-        const pad = 10;
-        let x = e.clientX + pad,
-            y = e.clientY + pad;
-        const r = tooltip.getBoundingClientRect();
+        const pad=10, r=tooltip.getBoundingClientRect();
+        let x=e.clientX+pad, y=e.clientY+pad;
+        if(x+r.width>innerWidth)  x=e.clientX-r.width-pad;
+        if(y+r.height>innerHeight) y=e.clientY-r.height-pad;
 
-        if (x + r.width  > window.innerWidth)  x = e.clientX - r.width  - pad;
-        if (y + r.height > window.innerHeight) y = e.clientY - r.height - pad;
-
-        tooltip.style.left    = x + 'px';
-        tooltip.style.top     = y + 'px';
-        tooltip.style.display = 'block';
+        Object.assign(tooltip.style,{
+          left:`${x}px`, top:`${y}px`, display:'block'
+        });
       });
-
-      el.addEventListener('mouseleave', () => {
-        tooltip.style.display = 'none';
-        tooltip.innerHTML = '';
-      });
+      el.addEventListener('mouseleave',()=>tooltip.style.display='none');
     });
   </script>
-
 </body>
 </html>
