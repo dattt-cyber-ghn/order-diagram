@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Quy trình xử lý đơn hàng</title>
+  <style>
+    .diagram-wrapper { position: relative; display: inline-block; max-width: 100%; }
+    .diagram-wrapper img.main-diagram { display: block; width: 100%; height: auto; }
+    .hotspot { position: absolute; cursor: pointer; background: rgba(255,0,0,0.2); }
+    /* Điều chỉnh tọa độ cho hotspot */
+    .hs-step1 { top: 60px; left: 120px; width: 140px; height: 90px; }
+    .hs-step2 { top: 240px; left: 300px; width: 130px; height: 80px; }
+    #tooltip {
+      position: fixed; pointer-events: none; background: rgba(0,0,0,0.7);
+      border-radius: 4px; padding: 6px; display: none; z-index: 1000;
+    }
+    #tooltip img, #tooltip video { max-width: 200px; max-height: 150px; display: block; }
+  </style>
+</head>
+<body>
+
+  <div class="diagram-wrapper">
+    <img
+      class="main-diagram"
+      src="https://drive.google.com/uc?export=view&id=1BKd2KU2J4ffxX9ClBcTyiQJlJfOhJVJc"
+      alt="Quy trình xử lý đơn hàng">
+
+    <div class="hotspot hs-step1"
+         data-media-url="https://drive.google.com/uc?export=view&id=DRIVE_IMG_ID_1"
+         data-media-type="image"></div>
+
+    <div class="hotspot hs-step2"
+         data-media-url="https://drive.google.com/uc?export=view&id=DRIVE_VIDEO_ID_2"
+         data-media-type="video"></div>
+  </div>
+
+  <div id="tooltip"></div>
+
+  <script>
+    const tooltip = document.getElementById('tooltip');
+    document.querySelectorAll('.hotspot').forEach(el => {
+      el.addEventListener('mousemove', e => {
+        const url  = el.dataset.mediaUrl;
+        const type = el.dataset.mediaType;
+        if (!url) return;
+        tooltip.innerHTML = type==='video'
+          ? `<video src="${url}" autoplay loop muted></video>`
+          : `<img src="${url}" alt="Preview">`;
+        const pad = 10;
+        let x = e.clientX + pad, y = e.clientY + pad;
+        const r = tooltip.getBoundingClientRect();
+        if (x + r.width  > innerWidth)  x = e.clientX - r.width - pad;
+        if (y + r.height > innerHeight) y = e.clientY - r.height - pad;
+        tooltip.style.left = x+'px';
+        tooltip.style.top  = y+'px';
+        tooltip.style.display = 'block';
+      });
+      el.addEventListener('mouseleave', () => tooltip.style.display='none');
+    });
+  </script>
+</body>
+</html>
