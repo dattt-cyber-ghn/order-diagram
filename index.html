@@ -20,9 +20,10 @@
       /* Bật background đỏ mờ để căn chỉnh, tắt khi đã xong */
       background: rgba(255,0,0,0.2);
     }
-    /* Tinh chỉnh tọa độ hotspot theo đúng vị trí trên ảnh mới */
+    /* Tinh chỉnh tọa độ cho hotspot theo đúng vị trí trên ảnh */
     .hs-step1 { top: 60px;  left: 120px; width: 140px; height: 90px; }
     .hs-step2 { top: 240px; left: 300px; width: 130px; height: 80px; }
+    /* Thêm .hs-step3, .hs-step4… nếu cần */
 
     #tooltip {
       position: fixed;
@@ -44,23 +45,25 @@
 <body>
 
   <div class="diagram-wrapper">
-    <!-- Đổi src thành file vừa upload -->
+    <!-- Đã encode khoảng trắng thành %20 -->
     <img
       class="main-diagram"
-      src="2025.LnD.Orientation GHN.png"
+      src="2025.LnD.Orientation%20GHN.png"
       alt="Quy trình xử lý đơn hàng">
 
-    <!-- Ví dụ hotspot bước 1 -->
+    <!-- Hotspot bước 1 -->
     <div class="hotspot hs-step1"
          data-media-url="https://drive.google.com/uc?export=view&id=DRIVE_IMG_ID_1"
          data-media-type="image">
     </div>
 
-    <!-- Ví dụ hotspot bước 2 -->
+    <!-- Hotspot bước 2 -->
     <div class="hotspot hs-step2"
          data-media-url="https://drive.google.com/uc?export=view&id=DRIVE_VIDEO_ID_2"
          data-media-type="video">
     </div>
+
+    <!-- Thêm hotspot khác tương tự -->
   </div>
 
   <div id="tooltip"></div>
@@ -72,6 +75,7 @@
         const url  = el.dataset.mediaUrl;
         const type = el.dataset.mediaType;
         if (!url) return;
+
         tooltip.innerHTML = type === 'video'
           ? `<video src="${url}" autoplay loop muted></video>`
           : `<img src="${url}" alt="Preview">`;
@@ -95,5 +99,6 @@
       });
     });
   </script>
+
 </body>
 </html>
